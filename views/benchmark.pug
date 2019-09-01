@@ -1,0 +1,52 @@
+html
+  head
+    title= benchmark
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    link(rel='stylesheet', href='/static/css/bootstrap.min.css')
+    script(src='/static/js/main.js')
+    
+  body
+    div(class='container')
+      div(class='row justify-content-md-center')
+        div(class='col col-md-12')
+          div(class='container')
+            div(class='row')
+              div(class='col')
+                h2= benchmark + ': ' + commit.substr(0, 8) + ' (' + commitDate + ')'
+            div(class='row')
+              div(class='col')
+                a(href='/' + commit + '/' + startIteration) Summary
+                span  | 
+                for b in benchmarks
+                  if (b !== benchmark)
+                    a(href='/' + commit + '/' + b + '/' + startIteration)= b
+                  else
+                    span #{b}
+                  if (benchmarks.indexOf(b) < benchmarks.length - 1)
+                    span  | 
+            div(class='row justify-content-md-center')
+              div(class='col') !{plot}
+            div(class='row justify-content-md-center')
+              div(class='col')
+                table(class='table table-sm table-hover', style='text-align: center;')
+                  thead(class='thead-dark')
+                    tr
+                      th Commit
+                      th Commit Date
+                      th Mean
+                      th Min
+                      th Max
+                  tbody
+                    tr
+                      td= commit.substr(0, 8)
+                      td= commitDate
+                      td= round(stats.run1.mean)
+                      td= round(stats.run1.min)
+                      td= round(stats.run1.max)
+            div(class='row justify-content-md-center')
+              div(class='col')
+                form
+                  div(class='form-group')
+                    label(for='formControlRange') Set start iteration: #{startIteration}
+                    input(class='form-control-range', type='range', min=0, max=250, value=startIteration, onchange='minIterationChanged(this)')

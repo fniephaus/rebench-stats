@@ -1,0 +1,14 @@
+{
+  "name": "rebench-stats",
+  "description": "Visualize ReBench benchmark results",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fniephaus/rebench-stats.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.17.1",
+    "pug": "2.0.4"
+  },
+  "version": "0.0.1"
+}
