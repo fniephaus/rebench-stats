@@ -13,7 +13,7 @@ html
           div(class='container')
             div(class='row')
               div(class='col')
-                h2= benchmark + ': ' + commit.substr(0, 8) + ' (' + commitDate + ')'
+                h2= benchmark + ': ' + commit.substr(0, 8) + ' (' + commitBranch + ', ' + commitDate + ')'
             div(class='row')
               div(class='col')
                 a(href='/' + commit + '/' + startIteration) Summary
@@ -32,15 +32,11 @@ html
                 table(class='table table-sm table-hover', style='text-align: center;')
                   thead(class='thead-dark')
                     tr
-                      th Commit
-                      th Commit Date
                       th Mean
                       th Min
                       th Max
                   tbody
                     tr
-                      td= commit.substr(0, 8)
-                      td= commitDate
                       td= round(stats.run1.mean)
                       td= round(stats.run1.min)
                       td= round(stats.run1.max)

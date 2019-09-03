@@ -34,26 +34,29 @@ html
                     tr
                       th Commit
                       th Commit Date
+                      th Commit Branch
                       th Mean
                       th Min
                       th Max
                   tbody
                     tr
                       td= commit1.substr(0, 8)
-                      td= commitDate1
+                      td= commit1Date
+                      td= commit1Branch
                       td= round(stats.run1.mean)
                       td= round(stats.run1.min)
                       td= round(stats.run1.max)
                     tr(style='color: red;')
                       td= commit2.substr(0, 8)
-                      td= commitDate2
+                      td= commit2Date
+                      td= commit2Branch
                       td= round(stats.run2.mean)
                       td= round(stats.run2.min)
                       td= round(stats.run2.max)
                     tr
                       td
-                        i diff
-                      td n/a
+                      td
+                      td
                       td= round(stats.run1.mean - stats.run2.mean)
                       td= round(stats.run1.min - stats.run2.min)
                       td= round(stats.run1.max - stats.run2.max)

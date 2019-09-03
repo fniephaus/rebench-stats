@@ -47,6 +47,16 @@ const gitCommitDate = (commit) => {
   }
 }
 
+const gitBranchContains = (commit) => {
+  let res = child_process.spawnSync('git', ['branch', '--contains', commit],
+    { cwd: '/Users/fniephaus/dev/graal/graalsqueak'})
+  if (res.error) {
+    return res.err
+  } else {
+    return res.stdout.toString().split(/\r?\n/)[0].trim()
+  }
+}
+
 app.set('view engine', 'pug')
 
 app.use('/static', express.static('static'))
@@ -72,11 +82,13 @@ app.get('/:commit([a-f0-9]+)/:startIteration(\\d+)?', (req, res) => {
     return
   }
   let commitDate = gitCommitDate(commit)
+  let commitBranch = gitBranchContains(commit)
   let startIteration = extractNumber(req.params.startIteration)
   let plot = summary_plot(file, startIteration)
   res.render('benchmark_summary', {
     commit,
     commitDate,
+    commitBranch,
     startIteration,
     benchmarks,
     round,
@@ -88,8 +100,10 @@ app.get('/:commit1([a-f0-9]+)/:commit2([a-f0-9]+)/:startIteration(\\d+)?', (req,
   let commit2 = req.params.commit2
   let commit1Short = shortCommit(commit1)
   let commit2Short = shortCommit(commit2)
-  let commitDate1 = gitCommitDate(commit1)
-  let commitDate2 = gitCommitDate(commit2)
+  let commit1Date = gitCommitDate(commit1)
+  let commit2Date = gitCommitDate(commit2)
+  let commit1Branch = gitBranchContains(commit1)
+  let commit2Branch = gitBranchContains(commit2)
   let file1 = path.join(dir, commit1 + extension)
   let file2 = path.join(dir, commit2 + extension)
   if (!fs.lstatSync(file1).isFile() || !fs.lstatSync(file2).isFile()) {
@@ -104,8 +118,10 @@ app.get('/:commit1([a-f0-9]+)/:commit2([a-f0-9]+)/:startIteration(\\d+)?', (req,
     commit2,
     commit1Short,
     commit2Short,
-    commitDate1,
-    commitDate2,
+    commit1Date,
+    commit2Date,
+    commit1Branch,
+    commit2Branch,
     startIteration,
     benchmarks,
     round,
@@ -120,12 +136,14 @@ app.get('/:commit([a-f0-9]+)/:benchmark(\\w+)/:startIteration(\\d+)?', (req, res
     return
   }
   let commitDate = gitCommitDate(commit)
+  let commitBranch = gitBranchContains(commit)
   let benchmark = req.params.benchmark
   let startIteration = extractNumber(req.params.startIteration)
   let plot = single_plot(file, benchmark, startIteration)
   res.render('benchmark', {
     commit,
     commitDate,
+    commitBranch,
     benchmark,
     startIteration,
     benchmarks,
@@ -136,8 +154,10 @@ app.get('/:commit([a-f0-9]+)/:benchmark(\\w+)/:startIteration(\\d+)?', (req, res
 app.get('/:commit1([a-f0-9]+)/:commit2([a-f0-9]+)/:benchmark(\\w+)/:startIteration(\\d+)?', (req, res) => {
   let commit1 = req.params.commit1
   let commit2 = req.params.commit2
-  let commitDate1 = gitCommitDate(commit1)
-  let commitDate2 = gitCommitDate(commit2)
+  let commit1Date = gitCommitDate(commit1)
+  let commit2Date = gitCommitDate(commit2)
+  let commit1Branch = gitBranchContains(commit1)
+  let commit2Branch = gitBranchContains(commit2)
   let file1 = path.join(dir, commit1 + extension)
   let file2 = path.join(dir, commit2 + extension)
   if (!fs.lstatSync(file1).isFile() || !fs.lstatSync(file2).isFile()) {
@@ -151,8 +171,10 @@ app.get('/:commit1([a-f0-9]+)/:commit2([a-f0-9]+)/:benchmark(\\w+)/:startIterati
   res.render('benchmark_diff', {
     commit1,
     commit2,
-    commitDate1,
-    commitDate2,
+    commit1Date,
+    commit2Date,
+    commit1Branch,
+    commit2Branch,
     benchmark,
     startIteration,
     benchmarks,
