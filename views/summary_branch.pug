@@ -1,0 +1,22 @@
+extends layout.pug
+
+block content
+  div(class='container-fluid')
+    div(class='row')
+      div(class='col')
+        h2= 'History: ' + branch
+    div(class='row')
+      div(class='col')
+        span Summary | 
+        for b in benchmarks
+          a(href= '/' + branch + '/' + b + '/' + startIteration)= b
+          if (benchmarks.indexOf(b) < benchmarks.length - 1)
+            span  | 
+    div(class='row')
+      div(class='col') !{plot}
+    div(class='row')
+      div(class='col')
+        form
+          div(class='form-group')
+            label(for='formControlRange') Set start iteration: #{startIteration}
+            input(class='form-control-range', type='range', min=0, max=250, value=startIteration, onchange='minIterationChanged(this)')

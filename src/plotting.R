@@ -9,6 +9,15 @@ if (exists('import')) {
 }
 
 
+load_all_data <- function (folder, files) {
+  result <- NULL
+  for (file in files) {
+    data <- load_data_file(paste(folder, file, sep="/"))
+    result <- rbind(result, data)
+  }
+  result
+}
+
 load_data_file <- function (file) {
   # [2019-08-25T10:16:55] 5757.000000 ms  total Permute GraalSqueak-EE  graalsqueak 1000  0 1   250
   row_names <- c("Timestamp", "Value", "Unit", "Criterion",
@@ -31,17 +40,22 @@ load_data_file <- function (file) {
   bench$Cores <- factor(bench$Cores)
   bench$Suite <- factor(bench$Suite)
   
+  fileInfo <- strsplit(basename(file), "-")
+  date <- paste(fileInfo[[1]][1:3], collapse="-")
+  commit <- fileInfo[[1]][4]
+  commitShort <- substr(commit, 0, 8)
+  bench <- mutate(bench, Date = date, Commit = commit, CommitShort = commitShort)
   bench
 }
 
 toSVG <- function (plot) {
   svg(width = svgWidth, height = svgHeight)
   print(plot)
-  return(svg.off())
+  svg.off()
 }
 
-benchmark_plot <- function (file1, benchName, startIteration) {
-  data <- load_data_file(file1)
+benchmark_plot <- function (file, benchName, startIteration) {
+  data <- load_data_file(file)
   data <- subset(data, Benchmark == benchName)
   data <- data %>% filter(iteration > startIteration)
   if (exists('statsObject')) {
@@ -59,7 +73,7 @@ benchmark_plot <- function (file1, benchName, startIteration) {
   #plot <- plot + geom_smooth()
   #plot <- plot + scale_x_continuous(breaks = seq(0, max(data$iteration), 100))
   plot <- plot + geom_vline(xintercept = c(50, 100, 150, 200, 250), linetype = "longdash", colour = "#cccccc")
-  return(toSVG(plot))
+  toSVG(plot)
 }
 
 benchmark_diff_plot <- function (file1, file2, benchName, startIteration) {
@@ -92,7 +106,7 @@ benchmark_diff_plot <- function (file1, file2, benchName, startIteration) {
   plot <- plot + geom_smooth(method = 'loess')
   #plot <- plot + scale_x_continuous(breaks = seq(0, max(data$iteration), 100))
   plot <- plot + geom_vline(xintercept = c(50, 100, 150, 200, 250), linetype = "longdash", colour = "#cccccc")
-  return(toSVG(plot))
+  toSVG(plot)
 }
 
 summary_plot <- function (file, startIteration) {
@@ -103,23 +117,40 @@ summary_plot <- function (file, startIteration) {
   plot <- plot + xlab('') + ylab(data$Unit)
   plot <- plot + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
   #plot <- plot + scale_x_continuous(breaks = seq(0, max(data$iteration), 100))
-  return(toSVG(plot))
+  toSVG(plot)
 }
 
-summary_diff_plot <- function (commit1, date1, file1, commit2, date2, file2, startIteration) {
+summary_diff_plot <- function (file1, file2, startIteration) {
   data1 <- load_data_file(file1)
   data2 <- load_data_file(file2)
   data1 <- data1 %>% group_by(Benchmark) %>% filter(iteration > startIteration)
   data2 <- data2 %>% group_by(Benchmark) %>% filter(iteration > startIteration)
-  data1$commit <- commit1
-  data2$commit <- commit2
-  data1$date <- date1
-  data2$date <- date2
   data <- rbind(data1, data2)
   # print(data)
-  plot <- ggplot(data, aes(x=commit, y=Value, group=date)) + facet_wrap(~Benchmark, scale="free")
+  plot <- ggplot(data, aes(x=CommitShort, y=Value, group=date)) + facet_wrap(~Benchmark, scale="free")
   plot <- plot + geom_boxplot(lwd = 0.4, show.legend = FALSE, outlier.size=0.5, outlier.colour = "#ff0000")
   plot <- plot + xlab('') + ylab(data$Unit)
   #plot <- plot + scale_x_continuous(breaks = seq(0, max(data$iteration), 100))
-  return(toSVG(plot))
+  toSVG(plot)
+}
+
+benchmark_branch_plot <- function(folder, files, benchmark, startIteration) {
+  data <- load_all_data(folder, files)
+  data <- data %>% filter(Benchmark == benchmark) %>% filter(iteration > startIteration)
+  #print(data)
+  plot <- ggplot(data, aes(x=iteration, y=Value, group=Date, color=Date))
+  plot <- plot + geom_line(size=0.4)
+  plot <- plot + xlab('') + ylab(data$Unit)
+  plot <- plot + scale_color_grey(start=0.8, end=0)
+  toSVG(plot)
+}
+
+summary_branch_plot <- function(folder, files, startIteration) {
+  data <- load_all_data(folder, files)
+  data <- data %>% group_by(Benchmark) %>% filter(iteration > startIteration)
+  #print(data)
+  plot <- ggplot(data, aes(x=CommitShort, y=Value, group=Date)) + facet_wrap(~Benchmark, scale="free")
+  plot <- plot + geom_boxplot(lwd = 0.4, show.legend = FALSE, outlier.size=0.5, outlier.colour = "#ff0000")
+  plot <- plot + xlab('') + ylab(data$Unit)
+  toSVG(plot)
 }

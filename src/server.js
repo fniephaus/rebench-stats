@@ -26,8 +26,10 @@ Polyglot.export('stats', stats)
 
 Polyglot.evalFile('R', 'src/plotting.R')
 const benchmark_plot = Polyglot.eval('R', 'benchmark_plot')
+const benchmark_branch_plot = Polyglot.eval('R', 'benchmark_branch_plot')
 const benchmark_diff_plot = Polyglot.eval('R', 'benchmark_diff_plot')
 const summary_plot = Polyglot.eval('R', 'summary_plot')
+const summary_branch_plot = Polyglot.eval('R', 'summary_branch_plot')
 const summary_diff_plot = Polyglot.eval('R', 'summary_diff_plot')
 
 const round = (x) => Math.round(x * 1000) / 1000
@@ -96,10 +98,7 @@ app.get('/' + file1Regex + '/' + file2Regex + '/:startIteration(\\d+)?', (req, r
   let commit1Branch = req.params.branch1
   let commit2Branch = req.params.branch2
   let startIteration = extractNumber(req.params.startIteration)
-  let plot = summary_diff_plot(
-    commit1Short, commit1Date, file1Path,
-    commit2Short, commit2Date, file2Path,
-    startIteration)
+  let plot = summary_diff_plot(file1Path, file2Path, startIteration)
   res.render('summary_diff', {
     file1, file2,
     commit1, commit2,
@@ -166,6 +165,43 @@ app.get('/' + file1Regex + '/' + file2Regex + '/:benchmark(\\w+)/:startIteration
     benchmarks,
     round,
     plot, req, stats })
+})
+
+app.get('/:branch/:startIteration(\\d+)?', (req, res) => {
+  let branch = req.params.branch
+  let files
+  try {
+    files = fs.readdirSync(resultsDir).
+      filter(file => file.endsWith(branch + extension) && file.split('-').length >= 5);
+  } catch(err) {
+    console.error(err)
+  }
+  if (files.length == 0) {
+    res.status(404).send('')
+    return
+  }
+  let startIteration = extractNumber(req.params.startIteration)
+  let plot = summary_branch_plot(resultsDir, files, startIteration)
+  res.render('summary_branch', { benchmarks, branch, files, plot, startIteration })
+})
+
+app.get('/:branch/:benchmark/:startIteration(\\d+)?', (req, res) => {
+  let branch = req.params.branch
+  let files
+  try {
+    files = fs.readdirSync(resultsDir).
+      filter(file => file.endsWith(branch + extension) && file.split('-').length >= 5);
+  } catch(err) {
+    console.error(err)
+  }
+  if (files.length == 0) {
+    res.status(404).send('')
+    return
+  }
+  let benchmark = req.params.benchmark
+  let startIteration = extractNumber(req.params.startIteration)
+  let plot = benchmark_branch_plot(resultsDir, files, benchmark, startIteration)
+  res.render('benchmark_branch', { benchmarks, branch, files, plot, benchmark, startIteration })
 })
 
 app.listen(port, () => console.log(`Server listening on port ${port}...`))

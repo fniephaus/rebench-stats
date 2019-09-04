@@ -1,0 +1,36 @@
+extends layout.pug
+
+block content
+  div(class='container-fluid')
+    div(class='row')
+      div(class='col')
+        h2= branch + ': ' + benchmark
+    div(class='row')
+      div(class='col')
+        a(href='/' + branch + '/' + startIteration) Summary
+        span  | 
+        for b in benchmarks
+          if (b !== benchmark)
+            a(href='/' + branch + '/' + b + '/' + startIteration)= b
+          else
+            span #{b}
+          if (benchmarks.indexOf(b) < benchmarks.length - 1)
+            span  | 
+    div(class='row')
+      div(class='col') !{plot}
+    div(class='row')
+      div(class='col')
+        table(class='table table-sm table-hover', style='text-align: center;')
+          thead(class='thead-dark')
+            tr
+              th Filename
+          tbody
+            for file in files
+              tr
+                td= file
+    div(class='row justify-content-md-center')
+      div(class='col')
+        form
+          div(class='form-group')
+            label(for='formControlRange') Set start iteration: #{startIteration}
+            input(class='form-control-range', type='range', min=0, max=250, value=startIteration, onchange='minIterationChanged(this)')
