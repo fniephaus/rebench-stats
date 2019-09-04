@@ -13,8 +13,8 @@ const benchmarks = [
   'Permute', 'Queens', 'Richards', 'Sieve', 'Storage', 'Towers', ]
 
 const stats = {
-  run1: { max: 0, min: 0, mean: 0, },
-  run2: { max: 0, min: 0, mean: 0, },
+  run1: { min: 0, geomean: 0, median: 0, mean: 0, max: 0, },
+  run2: { min: 0, geomean: 0, median: 0, mean: 0, max: 0, },
 }
 
 console.log(`Initializing server...`)
@@ -22,11 +22,10 @@ console.log(`Initializing server...`)
 Polyglot.export('stats', stats)
 
 Polyglot.evalFile('R', 'plotting.R')
-const example_plot = Polyglot.eval('R', 'example_plot')
-const single_plot = Polyglot.eval('R', 'single_plot')
-const diff_plot = Polyglot.eval('R', 'diff_plot')
-const diff_summary_plot = Polyglot.eval('R', 'diff_summary_plot')
+const benchmark_plot = Polyglot.eval('R', 'benchmark_plot')
+const benchmark_diff_plot = Polyglot.eval('R', 'benchmark_diff_plot')
 const summary_plot = Polyglot.eval('R', 'summary_plot')
+const summary_diff_plot = Polyglot.eval('R', 'summary_diff_plot')
 
 const round = (x) => Math.round(x * 1000) / 1000
 const shortCommit = (x) => x.substr(0, 8)
@@ -85,7 +84,7 @@ app.get('/:commit([a-f0-9]+)/:startIteration(\\d+)?', (req, res) => {
   let commitBranch = gitBranchContains(commit)
   let startIteration = extractNumber(req.params.startIteration)
   let plot = summary_plot(file, startIteration)
-  res.render('benchmark_summary', {
+  res.render('summary', {
     commit,
     commitDate,
     commitBranch,
@@ -112,8 +111,8 @@ app.get('/:commit1([a-f0-9]+)/:commit2([a-f0-9]+)/:startIteration(\\d+)?', (req,
   }
 
   let startIteration = extractNumber(req.params.startIteration)
-  let plot = diff_summary_plot(commit1Short, file1, commit2Short, file2, startIteration)
-  res.render('benchmark_diff_summary', {
+  let plot = summary_diff_plot(commit1Short, file1, commit2Short, file2, startIteration)
+  res.render('summary_diff', {
     commit1,
     commit2,
     commit1Short,
@@ -139,7 +138,7 @@ app.get('/:commit([a-f0-9]+)/:benchmark(\\w+)/:startIteration(\\d+)?', (req, res
   let commitBranch = gitBranchContains(commit)
   let benchmark = req.params.benchmark
   let startIteration = extractNumber(req.params.startIteration)
-  let plot = single_plot(file, benchmark, startIteration)
+  let plot = benchmark_plot(file, benchmark, startIteration)
   res.render('benchmark', {
     commit,
     commitDate,
@@ -167,7 +166,7 @@ app.get('/:commit1([a-f0-9]+)/:commit2([a-f0-9]+)/:benchmark(\\w+)/:startIterati
 
   let benchmark = req.params.benchmark
   let startIteration = extractNumber(req.params.startIteration)
-  let plot = diff_plot(file1, file2, benchmark, startIteration)
+  let plot = benchmark_diff_plot(file1, file2, benchmark, startIteration)
   res.render('benchmark_diff', {
     commit1,
     commit2,
