@@ -106,16 +106,18 @@ summary_plot <- function (file, startIteration) {
   return(toSVG(plot))
 }
 
-summary_diff_plot <- function (commit1, file1, commit2, file2, startIteration) {
+summary_diff_plot <- function (commit1, date1, file1, commit2, date2, file2, startIteration) {
   data1 <- load_data_file(file1)
   data2 <- load_data_file(file2)
   data1 <- data1 %>% group_by(Benchmark) %>% filter(iteration > startIteration)
   data2 <- data2 %>% group_by(Benchmark) %>% filter(iteration > startIteration)
   data1$commit <- commit1
   data2$commit <- commit2
+  data1$date <- date1
+  data2$date <- date2
   data <- rbind(data1, data2)
   # print(data)
-  plot <- ggplot(data, aes(x=commit, y=Value, group=commit)) + facet_wrap(~Benchmark, scale="free")
+  plot <- ggplot(data, aes(x=commit, y=Value, group=date)) + facet_wrap(~Benchmark, scale="free")
   plot <- plot + geom_boxplot(lwd = 0.4, show.legend = FALSE, outlier.size=0.5, outlier.colour = "#ff0000")
   plot <- plot + xlab('') + ylab(data$Unit)
   #plot <- plot + scale_x_continuous(breaks = seq(0, max(data$iteration), 100))

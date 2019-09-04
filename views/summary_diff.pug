@@ -9,7 +9,7 @@ block content
       div(class='col')
         span Summary | 
         for b in benchmarks
-          a(href='/' + commit1 + '/' + commit2 + '/' + b + '/' + startIteration)= b
+          a(href= '/' + file1 + '/' + file2 + '/' + b + '/' + startIteration)= b
           if (benchmarks.indexOf(b) < benchmarks.length - 1)
             span  | 
     div(class='row')

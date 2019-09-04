@@ -4,12 +4,12 @@ block content
   div(class='container-fluid')
     div(class='row')
       div(class='col')
-        h2 Summary: #{commit.substr(0, 8)} (#{commitDate})
+        h2 Summary: #{commit.substr(0, 8)} (#{commitBranch}, #{commitDate})
     div(class='row')
       div(class='col')
         span Summary | 
         for b in benchmarks
-          a(href='/' + commit + '/' + b + '/' + startIteration)= b
+          a(href='/' + file + '/' + b + '/' + startIteration)= b
           if (benchmarks.indexOf(b) < benchmarks.length - 1)
             span  | 
     div(class='row')

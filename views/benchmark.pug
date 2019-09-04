@@ -7,11 +7,11 @@ block content
         h2= benchmark + ': ' + commit.substr(0, 8) + ' (' + commitBranch + ', ' + commitDate + ')'
     div(class='row')
       div(class='col')
-        a(href='/' + commit + '/' + startIteration) Summary
+        a(href='/' + file + '/' + startIteration) Summary
         span  | 
         for b in benchmarks
           if (b !== benchmark)
-            a(href='/' + commit + '/' + b + '/' + startIteration)= b
+            a(href='/' + file + '/' + b + '/' + startIteration)= b
           else
             span #{b}
           if (benchmarks.indexOf(b) < benchmarks.length - 1)

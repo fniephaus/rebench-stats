@@ -4,14 +4,14 @@ block content
   div(class='container-fluid')
     div(class='row')
       div(class='col')
-        h2= benchmark + ': ' + commit1.substr(0, 8) + ' vs. ' + commit2.substr(0, 8)
+        h2= benchmark + ': ' + commit1.substr(0, 8) + ' (' + commit1Date + ')' + ' vs. ' + commit2.substr(0, 8) + ' (' + commit2Date + ')'
     div(class='row')
       div(class='col')
-        a(href='/' + commit1 + '/' + commit2 + '/' + startIteration) Summary
+        a(href='/' + file1 + '/' + file2 + '/' + startIteration) Summary
         span  | 
         for b in benchmarks
           if (b !== benchmark)
-            a(href='/' + commit1 + '/' + commit2 + '/' + b + '/' + startIteration)= b
+            a(href='/' + file1 + '/' + file2 + '/' + b + '/' + startIteration)= b
           else
             span #{b}
           if (benchmarks.indexOf(b) < benchmarks.length - 1)
