@@ -1,7 +1,7 @@
 extends layout.pug
 
 block content
-  div(class='container')
+  div(class='container-fluid')
     div(class='row')
       div(class='col')
         h2 Summary: #{commit.substr(0, 8)} (#{commitDate})
@@ -12,9 +12,9 @@ block content
           a(href='/' + commit + '/' + b + '/' + startIteration)= b
           if (benchmarks.indexOf(b) < benchmarks.length - 1)
             span  | 
-    div(class='row justify-content-md-center')
+    div(class='row')
       div(class='col') !{plot}
-    div(class='row justify-content-md-center')
+    div(class='row')
       div(class='col')
         form
           div(class='form-group')
