@@ -127,7 +127,7 @@ summary_diff_plot <- function (file1, file2, startIteration) {
   data2 <- data2 %>% group_by(Benchmark) %>% filter(iteration > startIteration)
   data <- rbind(data1, data2)
   # print(data)
-  plot <- ggplot(data, aes(x=CommitShort, y=Value, group=date)) + facet_wrap(~Benchmark, scale="free")
+  plot <- ggplot(data, aes(x=CommitShort, y=Value, group=Date)) + facet_wrap(~Benchmark, scale="free")
   plot <- plot + geom_boxplot(lwd = 0.4, show.legend = FALSE, outlier.size=0.5, outlier.colour = "#ff0000")
   plot <- plot + xlab('') + ylab(data$Unit)
   #plot <- plot + scale_x_continuous(breaks = seq(0, max(data$iteration), 100))
