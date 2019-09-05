@@ -7,4 +7,4 @@ if [[ -z "${GRAALVM_HOME}" ]]; then
   exit 1
 fi
 
-"${GRAALVM_HOME}"/bin/node --polyglot --jvm server.js
+"${GRAALVM_HOME}"/bin/node --polyglot --jvm src/server.js
