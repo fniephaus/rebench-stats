@@ -7,5 +7,7 @@ if [[ -z "${GRAALVM_HOME}" ]]; then
   exit 1
 fi
 
+
+"${GRAALVM_HOME}"/bin/gu install R
 "${GRAALVM_HOME}"/bin/npm install
 "${GRAALVM_HOME}"/bin/R -e 'install.packages(c("ggplot2", "dplyr"))'
