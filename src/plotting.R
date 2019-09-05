@@ -48,6 +48,10 @@ load_data_file <- function (file) {
   bench
 }
 
+geomean <- function (x) {
+  exp(mean(log(x)))
+}
+
 toSVG <- function (plot) {
   svg(width = svgWidth, height = svgHeight)
   print(plot)
@@ -63,7 +67,8 @@ benchmark_plot <- function (file, benchName, startIteration) {
     statsObject$run1$min <- min(data$Value)
     statsObject$run1$mean <- mean(data$Value)
     statsObject$run1$median <- median(data$Value)
-    statsObject$run1$geomean <- exp(mean(log(data$Value)))
+    statsObject$run1$geomean <- geomean(data$Value)
+    statsObject$run1$sum <- sum(data$Value)
   }
   
   plot <- ggplot(data, aes(x=iteration, y=Value, group=Benchmark)) + geom_point(size=1)
@@ -88,12 +93,14 @@ benchmark_diff_plot <- function (file1, file2, benchName, startIteration) {
     statsObject$run1$min <- min(data1$Value)
     statsObject$run1$mean <- mean(data1$Value)
     statsObject$run1$median <- median(data1$Value)
-    statsObject$run1$geomean <- exp(mean(log(data1$Value)))
+    statsObject$run1$geomean <- geomean(data1$Value)
+    statsObject$run1$sum <- sum(data1$Value)
     statsObject$run2$max <- max(data2$Value)
     statsObject$run2$min <- min(data2$Value)
     statsObject$run2$mean <- mean(data2$Value)
     statsObject$run2$median <- median(data2$Value)
-    statsObject$run2$geomean <- exp(mean(log(data2$Value)))
+    statsObject$run2$geomean <- geomean(data2$Value)
+    statsObject$run2$sum <- sum(data2$Value)
   }
   # print(data1)
   
@@ -126,6 +133,20 @@ summary_diff_plot <- function (file1, file2, startIteration) {
   data1 <- data1 %>% group_by(Benchmark) %>% filter(iteration > startIteration)
   data2 <- data2 %>% group_by(Benchmark) %>% filter(iteration > startIteration)
   data <- rbind(data1, data2)
+  if (exists('statsObject')) {
+    statsObject$run1$min <- sum(aggregate(data1$Value, list(data1$Benchmark), min)$x)
+    statsObject$run1$max <- sum(aggregate(data1$Value, list(data1$Benchmark), max)$x)
+    statsObject$run1$mean <- sum(aggregate(data1$Value, list(data1$Benchmark), mean)$x)
+    statsObject$run1$median <- sum(aggregate(data1$Value, list(data1$Benchmark), median)$x)
+    statsObject$run1$geomean <- sum(aggregate(data1$Value, list(data1$Benchmark), geomean)$x)
+    statsObject$run1$sum <- sum(aggregate(data1$Value, list(data1$Benchmark), sum)$x)
+    statsObject$run2$min <- sum(aggregate(data2$Value, list(data2$Benchmark), min)$x)
+    statsObject$run2$max <- sum(aggregate(data2$Value, list(data2$Benchmark), max)$x)
+    statsObject$run2$mean <- sum(aggregate(data2$Value, list(data2$Benchmark), mean)$x)
+    statsObject$run2$median <- sum(aggregate(data2$Value, list(data2$Benchmark), median)$x)
+    statsObject$run2$geomean <- sum(aggregate(data2$Value, list(data2$Benchmark), geomean)$x)
+    statsObject$run2$sum <- sum(aggregate(data2$Value, list(data2$Benchmark), sum)$x)
+  }
   # print(data)
   plot <- ggplot(data, aes(x=CommitShort, y=Value, group=Date)) + facet_wrap(~Benchmark, scale="free")
   plot <- plot + geom_boxplot(lwd = 0.4, show.legend = FALSE, outlier.size=0.5, outlier.colour = "#ff0000")

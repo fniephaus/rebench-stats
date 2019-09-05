@@ -16,8 +16,8 @@ const benchmarks = [
   'Permute', 'Queens', 'Richards', 'Sieve', 'Storage', 'Towers', ]
 
 const stats = {
-  run1: { min: 0, geomean: 0, median: 0, mean: 0, max: 0, },
-  run2: { min: 0, geomean: 0, median: 0, mean: 0, max: 0, },
+  run1: { min: 0, geomean: 0, median: 0, mean: 0, max: 0, sum: 0, },
+  run2: { min: 0, geomean: 0, median: 0, mean: 0, max: 0, sum: 0, },
 }
 
 console.log(`Initializing server...`)
@@ -33,6 +33,7 @@ const summary_branch_plot = Polyglot.eval('R', 'summary_branch_plot')
 const summary_diff_plot = Polyglot.eval('R', 'summary_diff_plot')
 
 const round = (x) => Math.round(x * 1000) / 1000
+const msToM = (x) => round(x / 1000 / 60)
 const shortCommit = (x) => x.substr(0, 8)
 const extractDate = (fileName) => fileName.substr(0, 19)
 
@@ -76,7 +77,7 @@ app.get('/' + fileRegex + '/:startIteration(\\d+)?', (req, res) => {
     commitBranch,
     startIteration,
     benchmarks,
-    round,
+    round, msToM, msToM, msToM, msToM,
     plot, req, stats })
 })
 
@@ -107,7 +108,7 @@ app.get('/' + file1Regex + '/' + file2Regex + '/:startIteration(\\d+)?', (req, r
     commit1Branch, commit2Branch,
     startIteration,
     benchmarks,
-    round,
+    round, msToM, msToM, msToM,
     plot, req, stats })
 })
 
@@ -132,7 +133,7 @@ app.get('/' + fileRegex + '/:benchmark(\\w+)/:startIteration(\\d+)?', (req, res)
     benchmark,
     startIteration,
     benchmarks,
-    round,
+    round, msToM, msToM,
     plot, req, stats })
 })
 
@@ -163,7 +164,7 @@ app.get('/' + file1Regex + '/' + file2Regex + '/:benchmark(\\w+)/:startIteration
     benchmark,
     startIteration,
     benchmarks,
-    round,
+    round, msToM,
     plot, req, stats })
 })
 

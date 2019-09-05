@@ -16,6 +16,55 @@ block content
       div(class='col') !{plot}
     div(class='row')
       div(class='col')
+        table(class='table table-sm table-hover', style='text-align: center;')
+          thead(class='thead-dark')
+            tr
+              th Commit
+              th Commit Date
+              th Commit Branch
+              th Sum Min
+              th Sum Geomean
+              th Sum Median
+              th Sum Mean
+              th Sum Max
+              th Total (ms)
+              th Total (min)
+          tbody
+            tr
+              td= commit1.substr(0, 8)
+              td= commit1Date
+              td= commit1Branch
+              td= round(stats.run1.min)
+              td= round(stats.run1.geomean)
+              td= round(stats.run1.median)
+              td= round(stats.run1.mean)
+              td= round(stats.run1.max)
+              td= round(stats.run1.sum)
+              td= msToM(stats.run1.sum)
+            tr(style='color: red;')
+              td= commit2.substr(0, 8)
+              td= commit2Date
+              td= commit2Branch
+              td= round(stats.run2.min)
+              td= round(stats.run2.geomean)
+              td= round(stats.run2.median)
+              td= round(stats.run2.mean)
+              td= round(stats.run2.max)
+              td= round(stats.run2.sum)
+              td= msToM(stats.run2.sum)
+            tr
+              td
+              td
+              td
+              td= round(stats.run1.min - stats.run2.min)
+              td= round(stats.run1.geomean - stats.run2.geomean)
+              td= round(stats.run1.median - stats.run2.median)
+              td= round(stats.run1.mean - stats.run2.mean)
+              td= round(stats.run1.max - stats.run2.max)
+              td= round(stats.run1.sum - stats.run2.sum)
+              td= msToM(stats.run1.sum - stats.run2.sum)
+    div(class='row')
+      div(class='col')
         form
           div(class='form-group')
             label(for='formControlRange') Set start iteration: #{startIteration}

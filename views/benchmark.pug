@@ -27,7 +27,8 @@ block content
               th Geomean
               th Median
               th Mean
-              th Max
+              th Total (ms)
+              th Total (min)
           tbody
             tr
               td= round(stats.run1.min)
@@ -35,6 +36,8 @@ block content
               td= round(stats.run1.median)
               td= round(stats.run1.mean)
               td= round(stats.run1.max)
+              td= round(stats.run1.sum)
+              td= msToM(stats.run1.sum)
     div(class='row justify-content-md-center')
       div(class='col')
         form
