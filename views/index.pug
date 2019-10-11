@@ -12,13 +12,18 @@ html
           h2 ReBench Stats
           form
             div(class='form-group')
+              label(for='file1') ReBench Result File
               select(id='file1', class='form-control')
                 for file in files
                   option= file
             div(class='form-group')
+              label(for='file2') Compare against another ReBench Result File
               select(id='file2', class='form-control')
                 option(value='') (no diff)
                 for file in files
                   option= file
+            div(class='form-group')
+              label(for='startIteration') Start Iteration
+              input(id='startIteration', class='form-control', type='number', min=0, max=250, value=50)
             div(class='form-group')
               button(class='btn btn-primary', type='submit', onclick='return submitSelection()') Submit

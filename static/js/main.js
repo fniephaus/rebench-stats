@@ -1,5 +1,6 @@
 const file1Id = "file1"
 const file2Id = "file2"
+const startIterationId = "startIteration"
 const selectionId = "benchmark-selection"
 
 function submitSelection() {
@@ -8,6 +9,8 @@ function submitSelection() {
   let file2Select = document.getElementById(file2Id)
   let file2 = file2Select.options[file2Select.selectedIndex].value
   let suffix = file2.length > 0 && file1 !== file2 ? '/' + file2 : ''
+  let startIteration = document.getElementById(startIterationId).value
+  suffix += startIteration.length > 0 ? '/' + startIteration : ''
   window.location.href = '/' + file1 + suffix
   return false
 }
