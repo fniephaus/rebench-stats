@@ -50,7 +50,8 @@ app.get('/', (req, res) => {
   let files
   try {
     files = fs.readdirSync(resultsDir).
-      filter(file => file.endsWith(extension) && file.split('-').length >= 5);
+      filter(file => file.endsWith(extension) && file.split('-').length >= 5).
+      reverse();
   } catch(err) {
     console.error(err)
   }
