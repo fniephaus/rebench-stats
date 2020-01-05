@@ -11,7 +11,7 @@ function submitSelection() {
   let suffix = file2.length > 0 && file1 !== file2 ? '/' + file2 : ''
   let startIteration = document.getElementById(startIterationId).value
   suffix += startIteration.length > 0 ? '/' + startIteration : ''
-  window.location.href = '/' + file1 + suffix
+  window.open(window.location.href + file1 + suffix, '_blank');
   return false
 }
 
